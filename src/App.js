@@ -1,7 +1,7 @@
 
 // View Framework
 import React, { Component } from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 // Estilos
 import Nav from "react-bootstrap/Nav";
@@ -13,8 +13,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css"
 
 // Componentes
-// import Login from "./components/Login"
-// import Registro from "./components/Registro";
+import Login from "./components/Login";
+import Registro from "./components/Registro";
 import Lista from "./components/Lista";
 import Nuevo from "./components/Nuevo";
 import Editar from "./components/Editar";
@@ -29,13 +29,9 @@ class App extends Component {
           <header className="App-header">
             <Navbar bg="dark" variant="dark">
               <Container>
-
-                <Navbar.Brand>
-                  <Link to={"/"} className="nav-link pb-0">
-                    Event Horizon
-                  </Link>
+                <Navbar.Brand className="pt-0">
+                  <h5>Event Horizon</h5>
                 </Navbar.Brand>
-
                 <Nav className="justify-content-end">
                   {/* <Nav>
                     <Link to={"/nuevo"} className="nav-link">
@@ -52,8 +48,9 @@ class App extends Component {
               <Col md={12}>
                 <div className="wrapper pt-2">
                   <Switch>
-                    {/* <Route path="/" exact component={Login} /> */}
-                    <Route path="/" exact component={Lista} />
+                    <Route path="/" exact component={Login} />
+                    <Route path="/registro" component={Registro} />
+                    <Route path="/lista" component={Lista} />
                     <Route path="/nuevo" component={Nuevo} />
                     <Route path="/editar/:id" component={Editar} />
                     <Route path="/borrar/:id" component={Borrar} />

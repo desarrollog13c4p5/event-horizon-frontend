@@ -2,13 +2,13 @@
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
 
-export default class Borrar extends Component {
+export default class Editar extends Component {
     constructor(props) {
         super(props)
 
         this.state = {
             usuario: '',
-            auth: '',
+            token: null,
             nombre: '',
             tipo: '',
             error: 'Editar Instrumento',
@@ -57,7 +57,7 @@ export default class Borrar extends Component {
                         <div className="row pt-2">
                             <div className="col"></div>
                             <div className="col"></div>
-                            <Link to={"/"} className="col">
+                            <Link to={"/lista"} className="col">
                                 <button className="btn btn-secondary">
                                     Cancelar
                                 </button>
@@ -76,6 +76,10 @@ export default class Borrar extends Component {
     componentDidMount() {
         console.log(this.props);
 
+        // Traer token
+        const token = localStorage.getItem('token');
+        this.setState({ token: token });
+
         this.setState({
             nombre: this.props.location.state.nombre,
             tipo: this.props.location.state.tipo,
@@ -92,12 +96,12 @@ export default class Borrar extends Component {
         console.log('Actualizar Instrumento...');
         const errorActualizando = false;
 
-        if (errorActualizando) {
+        if (errorActualizando && this.state.token) {
             this.setState({
                 error: 'Error Borrando Instrumento!'
             })
         } else {
-            this.props.history.push('/');
+            this.props.history.push('/lista');
         }
     }
 }

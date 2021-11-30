@@ -12,7 +12,6 @@ const Instrumento = props => (
         <td>{props.instrumento.tipo}</td>
         <td>
             <Link
-                // to={"/editar/" + props.instrumento.id}
                 to={{
                     pathname: "/editar/" + props.instrumento.id,
                     state: {
@@ -49,21 +48,40 @@ export default class Lista extends Component {
 
         this.state = {
             usuario: '',
-            auth: '',
+            token: null,
             instrumentos: [],
             error: '',
         }
     }
 
-    // Trae la lista
     componentDidMount() {
+        // Traer token
+        const token = localStorage.getItem('token');
+        console.log(token);
+        this.setState({ token: token });
+
+        // Consumir API traer lista de instrumentos
         console.log('trayendo lista...');
+        // axios
+        //     .get('ruta_al_backend')
+        //     .then((res) => {
+        //         console.log(res.data);
+        //         this.setState({
+        //             instrumentos: res.data
+        //         })
+        //     })
+        //     .catch((error) => {
+        //         console.log(error);
+        //         this.setState({
+        //             error: 'Error obteniendo la lista'
+        //         })
+        //     });
 
         // Simular traer elementos
         this.setState({
             instrumentos: [
                 { id: 1, nombre: 'test1', tipo: '1' },
-                { id: 2, nombre: 'test2', tipo: '2' },
+                { id: 1, nombre: 'test2', tipo: '2' },
             ],
         })
     }
@@ -80,8 +98,6 @@ export default class Lista extends Component {
 
     // Unicamente para pruebas
     crearInstrumento(instrumento) {
-        // console.log(instrumento);
-        // console.log(this.state.instrumentos.slice(-1)[0].id);
         const id = this.state.instrumentos.slice(-1)[0].id;
         const instrumentos = this.state.instrumentos.slice();
 

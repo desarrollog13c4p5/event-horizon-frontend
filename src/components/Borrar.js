@@ -8,7 +8,7 @@ export default class Borrar extends Component {
 
         this.state = {
             usuario: '',
-            auth: '',
+            token: null,
             error: 'Borrar Instrumento',
         }
 
@@ -51,7 +51,7 @@ export default class Borrar extends Component {
                         <div className="row pt-2">
                             <div className="col"></div>
                             <div className="col"></div>
-                            <Link to={"/"} className="col">
+                            <Link to={"/lista"} className="col">
                                 <button className="btn btn-secondary">
                                     Cancelar
                                 </button>
@@ -69,6 +69,10 @@ export default class Borrar extends Component {
 
     componentDidMount() {
         console.log(this.props);
+
+        // Traer token
+        const token = localStorage.getItem('token');
+        this.setState({ token: token });
     }
 
     onSubmit(e) {
@@ -78,12 +82,12 @@ export default class Borrar extends Component {
         console.log('Borrando Instrumento...');
         const errorBorrando = false;
 
-        if (errorBorrando) {
+        if (errorBorrando && this.state.token) {
             this.setState({
                 error: 'Error Borrando Instrumento!'
             })
         } else {
-            this.props.history.push('/');
+            this.props.history.push('/lista');
         }
     }
 }
