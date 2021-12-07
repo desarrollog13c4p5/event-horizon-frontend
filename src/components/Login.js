@@ -75,6 +75,15 @@ export default class Login extends Component {
 
     componentDidMount() {
         console.log(this.props);
+
+        // Si existe token, redireciona a Lista
+        if (localStorage.getItem('token')) {
+
+            // Actualizar Usuario en NavBar
+            this.props.setUser();
+
+            this.props.history.push('/lista');
+        }
     }
 
     onChangeUsuario(e) { this.setState({ usuario: e.target.value }) }
@@ -93,8 +102,12 @@ export default class Login extends Component {
             })
         } else {
             // Guardar el Token
-            localStorage.setItem("token", 'simulacionDeToken_' + this.state.usuario);
-            localStorage.setItem("expire_at", Date.now() + 60);
+            localStorage.setItem("token", 'simulacionDeToken_eventHorizon');
+            localStorage.setItem("usuario", this.state.usuario);
+            // localStorage.setItem("expiracion", Date.now() + 60);
+
+            // Actualizar Usuario en NavBar
+            this.props.setUser(this.state.usuario);
 
             this.props.history.push('/lista');
         }

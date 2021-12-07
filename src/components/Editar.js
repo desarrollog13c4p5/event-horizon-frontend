@@ -1,6 +1,7 @@
 
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
+import axios from 'axios';
 
 export default class Editar extends Component {
     constructor(props) {
@@ -11,7 +12,7 @@ export default class Editar extends Component {
             token: null,
             nombre: '',
             tipo: '',
-            error: 'Editar Instrumento',
+            error: 'Editando Instrumento',
         }
 
         this.onChangeInstNombre = this.onChangeInstNombre.bind(this);
@@ -78,12 +79,20 @@ export default class Editar extends Component {
 
         // Traer token
         const token = localStorage.getItem('token');
-        this.setState({ token: token });
 
-        this.setState({
-            nombre: this.props.location.state.nombre,
-            tipo: this.props.location.state.tipo,
-        })
+        if (token) {
+            // Actualizar Usuario en NavBar
+            this.props.setUser();
+
+            this.setState({
+                token: token,
+                nombre: this.props.location.state.nombre,
+                tipo: this.props.location.state.tipo,
+            })
+        } else {
+            console.log('Token no encontrado, redireccionando a Login...');
+            this.props.history.push('/');
+        }
     }
 
     onChangeInstNombre(e) { this.setState({ nombre: e.target.value }) }
@@ -93,15 +102,21 @@ export default class Editar extends Component {
         e.preventDefault();
 
         // Consumir API Actualizar instrumento
-        console.log('Actualizar Instrumento...');
-        const errorActualizando = false;
-
-        if (errorActualizando && this.state.token) {
-            this.setState({
-                error: 'Error Borrando Instrumento!'
+        console.log('Actualizar Instrumento ' + this.props.match.params.id);
+        axios
+            // .put('http://localhost:4000/instrumentos/actualizar/' + this.props.match.params.id, {
+            .put('https://fierce-falls-83084.herokuapp.com/instrumentos/actualizar/' + this.props.match.params.id, {
+                nombre: this.state.nombre,
+                tipo: this.state.tipo,
             })
-        } else {
-            this.props.history.push('/lista');
-        }
+            .then((res) => {
+                this.props.history.push('/lista');
+            })
+            .catch((error) => {
+                console.log(error);
+                this.setState({
+                    error: 'Error Editando Instrumento!'
+                });
+            });
     }
 }

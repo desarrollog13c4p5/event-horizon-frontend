@@ -1,5 +1,6 @@
 
 import React, { Component } from 'react';
+import axios from 'axios';
 
 export default class Nuevo extends Component {
     constructor(props) {
@@ -21,21 +22,28 @@ export default class Nuevo extends Component {
     onSubmit(e) {
         e.preventDefault();
         
+        // Consumir API crear instrumento
         console.log('Creando Instrumento...');
-        // Consumir API adicionar instrumento
-
-        // Simular Crear Instrumento en component Lista
-        this.props.crearInstrumento({
-            nombre: this.state.nombre,
-            tipo: this.state.tipo,
-        })
-        const errorCreando = false;
-
-        this.setState({
-            nombre: '',
-            tipo: '',
-            error: errorCreando ? 'Error creando Instrumento' : 'Nuevo Instrumento',
-        })
+        axios
+            // .post('http://localhost:4000/instrumentos/crear', {
+            .post('https://fierce-falls-83084.herokuapp.com/instrumentos/crear', {
+                nombre: this.state.nombre,
+                tipo: this.state.tipo,
+            })
+            .then((res) => {
+                this.setState({
+                    error: 'Nuevo Instrumento',
+                    nombre: '',
+                    tipo: '',
+                });
+                this.props.traerLista();
+            })
+            .catch((error) => {
+                console.log(error);
+                this.setState({
+                    error: 'Error creando Instrumento!'
+                });
+            });
     }
 
     onChangeInstNombre(e) { this.setState({ nombre: e.target.value }) }

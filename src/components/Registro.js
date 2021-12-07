@@ -91,6 +91,15 @@ export default class Registro extends Component {
 
     componentDidMount() {
         console.log(this.props);
+
+        // Si existe token, redireciona a Lista
+        if (localStorage.getItem('token')) {
+
+            // Actualizar Usuario en NavBar
+            this.props.setUser();
+
+            this.props.history.push('/lista');
+        }
     }
 
     onChangeUsuario(e) { this.setState({ usuario: e.target.value }) }
@@ -111,7 +120,7 @@ export default class Registro extends Component {
                     error: 'Error registrando usuario!'
                 })
             } else {
-                this.props.history.push('/login');
+                this.props.history.push('/');
             }
         } else {
             this.setState({

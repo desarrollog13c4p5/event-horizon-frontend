@@ -1,6 +1,7 @@
 
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
+import axios from 'axios';
 
 export default class Borrar extends Component {
     constructor(props) {
@@ -9,7 +10,7 @@ export default class Borrar extends Component {
         this.state = {
             usuario: '',
             token: null,
-            error: 'Borrar Instrumento',
+            error: 'Borrar Instrumento?',
         }
 
         this.onSubmit = this.onSubmit.bind(this);
@@ -72,22 +73,37 @@ export default class Borrar extends Component {
 
         // Traer token
         const token = localStorage.getItem('token');
-        this.setState({ token: token });
+
+        if (token) {
+            // Actualizar Usuario en NavBar
+            this.props.setUser();
+
+            this.setState({
+                token: token,
+            })
+        } else {
+            console.log('Token no encontrado, redireccionando a Login...');
+            this.props.history.push('/');
+        }
     }
 
     onSubmit(e) {
         e.preventDefault();
 
         // Consumir API Borrar instrumento
-        console.log('Borrando Instrumento...');
-        const errorBorrando = false;
-
-        if (errorBorrando && this.state.token) {
-            this.setState({
-                error: 'Error Borrando Instrumento!'
+        console.log('Borrando Instrumento ' + this.props.match.params.id);
+        axios
+            // .delete('http://localhost:4000/instrumentos/borrar/' + this.props.match.params.id)
+            .delete('https://fierce-falls-83084.herokuapp.com/instrumentos/borrar/' + this.props.match.params.id)
+            .then((res) => {
+                this.props.history.push('/lista');
             })
-        } else {
-            this.props.history.push('/lista');
-        }
+            .catch((error) => {
+                console.log(error);
+                this.setState({
+                    error: 'Error Borrando Instrumento!'
+                });
+            });
+
     }
 }

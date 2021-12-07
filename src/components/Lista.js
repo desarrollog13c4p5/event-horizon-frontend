@@ -1,6 +1,7 @@
 
 import React, { Component } from 'react';
 import { Link } from "react-router-dom";
+import axios from 'axios';
 
 // Components
 import Nuevo from "./Nuevo"
@@ -13,7 +14,7 @@ const Instrumento = props => (
         <td>
             <Link
                 to={{
-                    pathname: "/editar/" + props.instrumento.id,
+                    pathname: "/editar/" + props.instrumento._id,
                     state: {
                         nombre: props.instrumento.nombre,
                         tipo: props.instrumento.tipo,
@@ -27,7 +28,7 @@ const Instrumento = props => (
             <span> </span>
             <Link
                 to={{
-                    pathname: "/borrar/" + props.instrumento.id,
+                    pathname: "/borrar/" + props.instrumento._id,
                     state: {
                         nombre: props.instrumento.nombre,
                         tipo: props.instrumento.tipo,
@@ -58,32 +59,18 @@ export default class Lista extends Component {
         // Traer token
         const token = localStorage.getItem('token');
         console.log(token);
-        this.setState({ token: token });
 
-        // Consumir API traer lista de instrumentos
-        console.log('trayendo lista...');
-        // axios
-        //     .get('ruta_al_backend')
-        //     .then((res) => {
-        //         console.log(res.data);
-        //         this.setState({
-        //             instrumentos: res.data
-        //         })
-        //     })
-        //     .catch((error) => {
-        //         console.log(error);
-        //         this.setState({
-        //             error: 'Error obteniendo la lista'
-        //         })
-        //     });
+        if (token) {
+            this.setState({ token: token });
 
-        // Simular traer elementos
-        this.setState({
-            instrumentos: [
-                { id: 1, nombre: 'test1', tipo: '1' },
-                { id: 1, nombre: 'test2', tipo: '2' },
-            ],
-        })
+            // Actualizar Usuario en NavBar
+            this.props.setUser();
+            this.traerLista();
+
+        } else {
+            console.log('Token no encontrado, redireccionando a Login...');
+            this.props.history.push('/');
+        }
     }
 
     actualizarLista() {
@@ -96,18 +83,25 @@ export default class Lista extends Component {
         )
     }
 
-    // Unicamente para pruebas
-    crearInstrumento(instrumento) {
-        const id = this.state.instrumentos.slice(-1)[0].id;
-        const instrumentos = this.state.instrumentos.slice();
-
-        this.setState({
-            instrumentos: instrumentos.concat({
-                id: id + 1,
-                nombre: instrumento.nombre,
-                tipo: instrumento.tipo,
-            }),
-        })
+    traerLista() {
+        // Consumir API traer lista de instrumentos
+        console.log('trayendo lista...');
+        axios
+            // .get('http://localhost:4000/instrumentos/')
+            .get('https://fierce-falls-83084.herokuapp.com/instrumentos/')
+            .then((res) => {
+                console.log(res.data);
+                this.setState({
+                    instrumentos: res.data,
+                    error: 'Lista de instrumentos'
+                })
+            })
+            .catch((error) => {
+                console.log(error);
+                this.setState({
+                    error: 'Error obteniendo instrumentos!'
+                })
+            });
     }
 
     render() {
@@ -116,7 +110,7 @@ export default class Lista extends Component {
                 <div className="row pb-3">
                     <Nuevo
                         error={'Nuevo Instrumento'}
-                        crearInstrumento={(inst) => this.crearInstrumento(inst)}
+                        traerLista={() => this.traerLista()}
                     />
                 </div>
                 <h5>Lista de Instrumentos</h5>
